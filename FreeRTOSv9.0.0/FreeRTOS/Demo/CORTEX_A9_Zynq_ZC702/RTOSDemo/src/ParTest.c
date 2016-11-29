@@ -129,6 +129,22 @@ void vParTestInitialise( void )
 	//XGpio_DiscreteClear (&xGpio, 2, 0xFF);
 //	XGpio_DiscreteWrite (&xGpio, 1, 0x00);
 //	XGpio_DiscreteWrite (&xGpio, 2, 0x00);
+	
+	XUsbPs_Config *lol;
+
+	/* Initialise the GPIO driver. */
+	lol =  XUsbPs_LookupConfig( XPAR_XUSBPS_0_DEVICE_ID );
+	xStatus =  XUsbPs_CfgInitialize	( &xUsb, lol, lol->BaseAddress );
+	configASSERT( xStatus == XST_SUCCESS );
+
+
+	xStatus = XUsbPs_Reset(pxConfigPtr);
+	configASSERT( xStatus == XST_SUCCESS );
+
+
+	xStatus = XUsbPs_IntrSetHandler(lol, vParTestToggleLED, NULL, 0xFFFF);
+	configASSERT( xStatus == XST_SUCCESS );
+	( void ) xStatus; /* Remove compiler warning if configASSERT() is not defined. */
 }
 /*-----------------------------------------------------------*/
 
